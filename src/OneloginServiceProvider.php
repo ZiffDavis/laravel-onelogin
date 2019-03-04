@@ -2,9 +2,7 @@
 
 namespace ZiffDavis\Laravel\Onelogin;
 
-use Illuminate\Auth\AuthManager;
 use Illuminate\Routing\Router;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use OneLogin\Saml2;
 
@@ -12,7 +10,7 @@ class OneloginServiceProvider extends ServiceProvider
 {
     protected $defer = false;
 
-    public function boot(AuthManager $auth, Router $router)
+    public function boot(Router $router)
     {
         $configSourcePath = realpath(__DIR__ . '/../config/onelogin.php');
 
@@ -56,10 +54,6 @@ class OneloginServiceProvider extends ServiceProvider
         $this->mergeConfigFrom($configSourcePath, 'onelogin');
 
         $this->loadViewsFrom(__DIR__ . '/../views', 'onelogin');
-
-        $auth->provider('onelogin', function ($app, $config) {
-            return new Auth\OneLoginEloquentUserProvider($app, $config);
-        });
     }
 
     public function register()
