@@ -10,8 +10,7 @@
         }
     ],
     "require": {
-        "onelogin/php-saml": "^3.1",
-        "laravel/helpers": "^1.1"
+        "onelogin/php-saml": "^3.1"
     },
     "autoload": {
         "psr-4": {
