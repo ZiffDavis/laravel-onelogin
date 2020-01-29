@@ -4,6 +4,7 @@ namespace ZiffDavis\Laravel\Onelogin;
 
 use Illuminate\Auth\AuthManager;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
 use OneLogin\Saml2;
 
@@ -17,12 +18,12 @@ class OneloginServiceProvider extends ServiceProvider
 
         $router->middlewareGroup('onelogin', [Middleware\OneloginCsrfDisablerMiddleware::class]);
 
-        $middlewares = array_wrap(config('onelogin.routing.middleware'));
+        $middlewares = Arr::wrap(config('onelogin.routing.middleware'));
 
         $router->group([
-            'namespace' => 'ZiffDavis\Laravel\Onelogin\Controllers',
-            'as' => 'onelogin.',
-            'prefix' => 'onelogin/',
+            'namespace'  => 'ZiffDavis\Laravel\Onelogin\Controllers',
+            'as'         => 'onelogin.',
+            'prefix'     => 'onelogin/',
             'middleware' => array_merge(['onelogin'], $middlewares),
         ], function () use ($router) {
             $router->get('/metadata', 'OneloginController@metadata')->name('metadata');
@@ -65,44 +66,44 @@ class OneloginServiceProvider extends ServiceProvider
             }
 
             return new Saml2\Auth([
-                'strict' => app()->environment('production'),
-                'debug' => config('app.debug', false),
+                'strict'  => app()->environment('production'),
+                'debug'   => config('app.debug', false),
                 'baseurl' => null,
-                'sp' => [
-                    'entityId' => route('onelogin.metadata'),
+                'sp'      => [
+                    'entityId'                 => route('onelogin.metadata'),
                     'assertionConsumerService' => [
-                        'url' => route('onelogin.acs'),
+                        'url'     => route('onelogin.acs'),
                         'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
                     ],
                     'attributeConsumingService' => [
-                        'ServiceName' => 'SP test',
-                        'serviceDescription' => 'Test Service',
+                        'ServiceName'         => 'SP test',
+                        'serviceDescription'  => 'Test Service',
                         'requestedAttributes' => [
                             [
-                                'name' => '',
-                                'isRequired' => false,
-                                'nameFormat' => '',
-                                'friendlyName' => '',
+                                'name'           => '',
+                                'isRequired'     => false,
+                                'nameFormat'     => '',
+                                'friendlyName'   => '',
                                 'attributeValue' => ''
                             ]
                         ]
                     ],
                     'singleLogoutService' => [
-                        'url' => route('onelogin.acs'),
+                        'url'     => route('onelogin.acs'),
                         'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
                     ],
                     'NameIDFormat' => 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
-                    'x509cert' => '',
-                    'privateKey' => '',
+                    'x509cert'     => '',
+                    'privateKey'   => '',
                 ],
                 'idp' => [
-                    'entityId' => config('onelogin.issuer_url'),
+                    'entityId'            => config('onelogin.issuer_url'),
                     'singleSignOnService' => [
-                        'url' => config('onelogin.sso_url'),
+                        'url'     => config('onelogin.sso_url'),
                         'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
                     ],
                     'singleLogoutService' => [
-                        'url' => config('onelogin.slo_url'),
+                        'url'     => config('onelogin.slo_url'),
                         'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
                     ],
                     'x509cert' => config('onelogin.x509_cert')
