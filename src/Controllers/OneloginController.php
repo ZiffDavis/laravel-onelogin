@@ -14,7 +14,7 @@ use OneLogin\Saml2\Error;
 use OneLogin\Saml2\ValidationError;
 use ZiffDavis\Laravel\Onelogin\Events\OneloginLoginEvent;
 
-class OneLoginController extends Controller
+class OneloginController extends Controller
 {
     use HasRedirector;
 
@@ -70,6 +70,17 @@ class OneLoginController extends Controller
 
     public function acs(Request $request, AuthManager $auth)
     {
+        /**
+         * Support GET requests only when configured to respond, in those cases redirect to onelogin
+         */
+        if ($request->isMethod('GET')) {
+            abort_if(!config('onelogin.routing.enable_acs_redirect_for_get', false), 405);
+
+            return redirect(
+                $this->oneLogin->login($this->getRedirectUrl($request), [], false, false, true)
+            );
+        }
+
         try {
             $this->oneLogin->processResponse();
             $error = $this->oneLogin->getLastErrorReason();
