@@ -1,3 +1,9 @@
+# THIS PACKAGE HAS MOVED
+
+This package has moved to https://github.com/ziffmedia/laravel-onelogin
+
+Furthermore, the new package has reached 1.0, production worthy status and should be used in place of any application where ziffdavis/laravel-onelogin was once used.
+
 # Laravel onelogin
 
 A Laravel package for allowing onelogin to provide authentication and users to your application. This
